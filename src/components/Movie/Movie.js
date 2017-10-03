@@ -14,7 +14,7 @@ function Movie({title, poster, genres, synopsis}) {
 				<div className="Movie__Genres">
 					{genres.map((genre, index) => <MovieGenre genre={genre} key={index} />)}
 				</div>
-				<p className="Movie__Synopsis">
+				<div className="Movie__Synopsis">
 					<LinesEllipsis
 						text={synopsis}
 						maxLine="3"
@@ -22,7 +22,7 @@ function Movie({title, poster, genres, synopsis}) {
 						trimRight
 						basedOn="letters"
 					/>
-				</p>
+				</div>
 			</div>
 		</div>
 	);

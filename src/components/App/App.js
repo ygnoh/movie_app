@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../css/App.css';
-import Movie from '../Movie/Movie'
+import Movie from "../Movie/Movie";
 
 class App extends Component {
 	state = {};
