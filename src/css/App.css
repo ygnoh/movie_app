@@ -1,16 +1,16 @@
 .main-contents {
     height: 100%;
-    padding-top: 50px;
 }
 
 .App {
-    padding: 50px;
+    padding: 100px 50px 50px 50px;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
 }
 
-.App--loading{
+.App--loading {
+    padding-top: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
