@@ -1,5 +1,10 @@
+.main-contents {
+    height: 100%;
+    padding-top: 50px;
+}
+
 .App {
-    padding:50px;
+    padding: 50px;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;

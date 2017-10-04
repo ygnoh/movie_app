@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../css/App.css';
 import Movie from "../Movie/Movie";
+import Header from "../Header/Header";
 
 class App extends Component {
 	state = {};
@@ -47,8 +48,11 @@ class App extends Component {
 	render() {
         const { movies } = this.state;
 		return (
-			<div className={movies ? "App" : "App--loading"}>
-				{this.state.movies ? this._renderMovies() : "Loading..."}
+			<div className="main-contents">
+				<Header />
+				<div className={movies ? "App" : "App--loading"}>
+					{this.state.movies ? this._renderMovies() : "Loading..."}
+				</div>
 			</div>
 		);
 	}
