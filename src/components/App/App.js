@@ -8,25 +8,61 @@ class App extends Component {
 		super(props);
 
 		this.state = {
+			uri: "https://yts.ag/api/v2/list_movies.json?sort_by=download_count",
+			page: 1,
 			isLoading: true,
 		};
 
 		this.getMovies = this.getMovies.bind(this);
+
+		this._bindScrollEvent();
 	}
 
 	componentDidMount() {
 		this.getMovies();
 	}
 
+	_bindScrollEvent() {
+		window.onscroll = () => {
+			this._isScrollAtBottom() && this._loadNextPage();
+		}
+	}
+
+	_isScrollAtBottom() {
+		let scrollPosition = window.innerHeight + window.pageYOffset;
+		let pageHeight = this.refs.mainContents.offsetHeight;
+
+		// mac에서 이슈가 있다고 하여서 +2 하였다.
+		// https://stackoverflow.com/a/40370876/5247212
+		return scrollPosition + 2 >= pageHeight;
+	}
+
+	_loadNextPage() {
+		if (this.state.isLoading) {
+			return false;
+		}
+
+		this.setState((prevState) => {
+			return {
+				page: prevState.page + 1,
+				isLoading: true,
+			};
+		});
+
+		this.getMovies(this.state.uri, this.state.page);
+	}
+
 	// async function
-	getMovies = async (uri="https://yts.ag/api/v2/list_movies.json?sort_by=download_count") => {
+	getMovies = async (uri=this.state.uri, page=1) => {
 		this.setState({
+			uri,
+			page,
 			isLoading: true,
 		});
 
 		// _callAPI가 완료되기 전 까지 대기한다.
 		// async function에서만 가능함
-		const movies = await this._callAPI(uri);
+		const movies = await this._callAPI(uri + "&page=" + page);
 
 		// await가 완료된 후에 실행됨. 그것의 결과가 성공/실패든
 		this.setState({
@@ -60,9 +96,9 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="main-contents">
+			<div className="main-frame">
 				<Header getMovies={this.getMovies} />
-				<div className={this.state.isLoading ? "App--loading" : "App"}>
+				<div ref="mainContents" className={this.state.isLoading ? "App--loading" : "App"}>
 					{this.state.isLoading ? "Loading..." : this._renderMovies()}
 				</div>
 			</div>
