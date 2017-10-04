@@ -4,31 +4,44 @@ import Movie from "../Movie/Movie";
 import Header from "../Header/Header";
 
 class App extends Component {
-	state = {};
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isLoading: true,
+		};
+
+		this.getMovies = this.getMovies.bind(this);
+	}
 
 	componentDidMount() {
-		this._getMovies();
+		this.getMovies();
 	}
 
 	// async function
-	_getMovies = async () => {
+	getMovies = async (uri="https://yts.ag/api/v2/list_movies.json?sort_by=download_count") => {
+		this.setState({
+			isLoading: true,
+		});
+
 		// _callAPI가 완료되기 전 까지 대기한다.
 		// async function에서만 가능함
-		const movies = await this._callAPI();
+		const movies = await this._callAPI(uri);
 
 		// await가 완료된 후에 실행됨. 그것의 결과가 성공/실패든
 		this.setState({
 			// equivalent to `movies: movies`
-			movies
+			movies,
+			isLoading: false,
 		})
 	};
 
-	_callAPI = () => {
+	_callAPI = (uri) => {
 		// fetch는 promise를 return하는데, 이는 then과 catch로 다룰 수 있다. 
-		return fetch("https://yts.ag/api/v2/list_movies.json?sort_by=download_count")
-		.then(response => response.json())
-		.then(json => json.data.movies)
-		.catch(err => console.log(err));
+		return fetch(uri)
+			.then(response => response.json())
+			.then(json => json.data.movies)
+			.catch(err => console.log(err));
 	};
 
 	_renderMovies = () => {
@@ -46,12 +59,11 @@ class App extends Component {
 	};
 
 	render() {
-        const { movies } = this.state;
 		return (
 			<div className="main-contents">
-				<Header />
-				<div className={movies ? "App" : "App--loading"}>
-					{this.state.movies ? this._renderMovies() : "Loading..."}
+				<Header getMovies={this.getMovies} />
+				<div className={this.state.isLoading ? "App--loading" : "App"}>
+					{this.state.isLoading ? "Loading..." : this._renderMovies()}
 				</div>
 			</div>
 		);
