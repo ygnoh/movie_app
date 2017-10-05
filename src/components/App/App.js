@@ -7,15 +7,12 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			uri: "https://yts.ag/api/v2/list_movies.json?sort_by=download_count",
-			page: 1,
-			isLoading: true,
-		};
-
 		this.getMovies = this.getMovies.bind(this);
+		this.initMovies = this.initMovies.bind(this);
 
+		this._renderedMovies = [];
 		this._bindScrollEvent();
+		this.initMovies();
 	}
 
 	componentDidMount() {
@@ -62,12 +59,11 @@ class App extends Component {
 
 		// _callAPI가 완료되기 전 까지 대기한다.
 		// async function에서만 가능함
-		const movies = await this._callAPI(uri + "&page=" + page);
+		const newMovies = await this._callAPI(uri + "&page=" + page);
 
 		// await가 완료된 후에 실행됨. 그것의 결과가 성공/실패든
 		this.setState({
-			// equivalent to `movies: movies`
-			movies,
+			newMovies,
 			isLoading: false,
 		})
 	};
@@ -80,8 +76,18 @@ class App extends Component {
 			.catch(err => console.log(err));
 	};
 
+	initMovies() {
+		this.state = {
+			uri: "https://yts.ag/api/v2/list_movies.json?sort_by=download_count",
+			page: 1,
+			isLoading: true,
+		};
+
+		this._renderedMovies = [];
+	}
+
 	_renderMovies = () => {
-		const movies = this.state.movies.map((movie) => {
+		const newMovies = this.state.newMovies.map((movie) => {
 			return (<Movie
 				title={movie.title_english} 
 				poster={movie.medium_cover_image}
@@ -91,13 +97,14 @@ class App extends Component {
 			/>);
 		});
 
-		return movies;
+		this._renderedMovies = [...this._renderedMovies, ...newMovies];
+		return this._renderedMovies;
 	};
 
 	render() {
 		return (
 			<div className="main-frame">
-				<Header getMovies={this.getMovies} />
+				<Header getMovies={this.getMovies} initMovies={this.initMovies} />
 				<div ref="mainContents" className={this.state.isLoading ? "App--loading" : "App"}>
 					{this.state.isLoading ? "Loading..." : this._renderMovies()}
 				</div>

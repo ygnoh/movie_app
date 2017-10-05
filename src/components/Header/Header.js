@@ -6,7 +6,7 @@ class Header extends Component {
 		super(props);
 
 		this.state = {
-			sortValue: "download",
+			sortValue: "download_count",
 			limitValue: "20",
 		};
 
@@ -24,6 +24,7 @@ class Header extends Component {
 		let uri = "https://yts.ag/api/v2/list_movies.json?";
 		uri += "sort_by=" + this.state.sortValue + "&limit=" + this.state.limitValue;
 
+		this.props.initMovies();
 		this.props.getMovies(uri);
 	}
 
